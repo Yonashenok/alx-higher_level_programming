@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 def weight_average(my_list=[]):
-    if len(my_list) is None:
+    if not isinstance(my_list, list) or len(my_list) is None :
         return 0
     else:
         w_avg = 0
