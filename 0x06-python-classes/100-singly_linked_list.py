@@ -1,28 +1,63 @@
 #!/usr/bin/python3
+"""Node and Singly Linked List.
+This module provides a Node and a Linked List Class which adds sorted nodes
+"""
+
+
 class Node:
+    """Node class. """
+
     def __init__(self, data, next_node=None):
-        self.__data = data
-        self.__next_node = next_node
+        """__init__ method that sets data and next_node of node.
+        Args:
+            data (int): integer data of node
+            next_node (Node, optional): next node, default is None
+        """
+        self.data = data
+        self.next_node = next_node
 
     @property
     def data(self):
-        return (self.__data)
+        """Gets the data of the Node.
+        Returns:
+            data
+        """
+        return self.__data
+
+    @property
+    def next_node(self):
+        """Gets the next_node of the Node.
+        Returns:
+            Node or None
+        """
+        return self.__next_node
+
     @data.setter
     def data(self, value):
+        """data setter method that sets the data of node.
+        Args:
+            value (int): data of node
+        Raises:
+            TypeError: If `value` is not an integer.
+        """
         if not isinstance(value, int):
             raise TypeError("data must be an integer")
         self.__data = value
-    @property
-    def next_node(self):
-        return (self.__next_node)
+
     @next_node.setter
     def next_node(self, value):
+        """next_node setter method that sets the next node.
+        Args:
+            value (Node, optional): Node or None
+        Raises:
+            TypeError: If `value` is not a Node object or None.
+        """
         if value is None or isinstance(value, Node):
             self.__next_node = value
         else:
             raise TypeError("next_node must be a Node object")
-        
-        
+
+
 class SinglyLinkedList:
     """Singly linked list class."""
 
@@ -32,7 +67,7 @@ class SinglyLinkedList:
 
     def sorted_insert(self, value):
         """ sorted_insert method - inserts node in order
-    ii    Args:
+        Args:
             value (int): data of new node
         """
         new = Node(value)
@@ -72,20 +107,4 @@ class SinglyLinkedList:
                 llstr += str(curr.data) + '\n'
                 curr = curr.next_node
             llstr += str(curr.data)
-        return llstr 
-			 
-if __name__ == '__main__':
-    sll = SinglyLinkedList()
-
-    sll.sorted_insert(2)
-    sll.sorted_insert(5)
-    sll.sorted_insert(3)
-    sll.sorted_insert(10)
-    sll.sorted_insert(1)
-    sll.sorted_insert(-4)
-    sll.sorted_insert(-3)
-    sll.sorted_insert(4)
-    sll.sorted_insert(5)
-    sll.sorted_insert(12)
-    sll.sorted_insert(3)
-    print(sll)
+        return llstr
