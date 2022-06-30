@@ -1,65 +1,117 @@
 #!/usr/bin/python3
-#Author Hileamlak M. Yitayew
+
+
+class Matrix:
+    """Matrix.
+    Attributes:
+        name (str): name of matrix to use for error handling
+    """
+    name = None
+
+    @classmethod
+    def set_name(cls, name, matrix):
+        """set_name class method, alternative constructor
+        Alternative constructor that provides a way to customize error handling
+        messages to include name of matrix
+        Args:
+            name (str): name of matrix.
+            matrix (list): list of lists
+        """
+        cls.name = name
+        return cls(matrix)
+
+    def __init__(self, matrix):
+        """__init__ method.
+        Args:
+            matrix (list): list of lists
+        """
+        self.matrix = matrix
+
+    @property
+    def matrix(self):
+        """matrix: returns matrix object
+        Args:
+            matrix (list): list of lists
+        Returns:
+            matrix object
+        Raises:
+            TypeError: if not a list or list of lists, not ints and floats, not
+                uniform in row width
+            ValueError: if empty or cannot be multiplied
+        """
+        return self.__matrix
+
+    @matrix.setter
+    def matrix(self, matrix):
+        if not isinstance(matrix, list):
+            raise TypeError("{:s} must be a list".format(Matrix.name))
+        if len(matrix) == 0:
+            raise ValueError("{:s} can't be empty".format(Matrix.name))
+        rows = len(matrix)
+        columns = len(matrix[0])
+        if columns == 0:
+            raise ValueError("{:s} can't be empty".format(Matrix.name))
+        for r in range(rows):
+            if len(matrix[r]) != columns:
+                raise TypeError(
+                    "each row of {:s} must should be of the same size".format(
+                        Matrix.name))
+
+        for r in range(rows):
+            for c in range(columns):
+                n = matrix[r][c]
+                if not isinstance(n, int) and not isinstance(n, float):
+                    raise TypeError(
+                        "{:s} should contain only integers or floats".format(
+                            Matrix.name))
+
+        self.__matrix = matrix
+
+    def __len__(self):
+        """Provides length functionality to matrix object."""
+        return len(self.__matrix)
+
+    def __getitem__(self, index):
+        """Provides indexing functionality to matrix object."""
+        return self.__matrix[index]
 
 
 def matrix_mul(m_a, m_b):
-    """Multiplies two matricies
+    """matrix_mul multiplies two matrix objects
+    Note:
+        Most of the error handling is done in the Matrix class
+    Args:
+    m_a (Matrix obj):
+    m_b (Matrix obj):
+    Returns:
+        matrix object that is the result of matrix multiplication
+    Raises:
+        ValueError: if matrices cannot be multiplied
     """
+    m_a = Matrix.set_name('m_a', m_a)
+    m_b = Matrix.set_name('m_b', m_b)
 
-    # check if the two matrix's aren't empty
-    if type(m_a) != list:
-        raise TypeError("m_a must be a list")
-    if type(m_b) != list:
-        raise TypeError("m_b must be a list")
-    if len(m_a) == 0:
-        raise ValueError("m_a can't be empty")
-    # check the validity of the content of each elemtent
-    # for matrix a
-    if not all(type(row) == list for row in m_a):
-        raise TypeError("m_a must be a list of lists")
-    if len(m_a[0]) == 0:
-        raise ValueError("m_a can't be empty")
+    rows_a = len(m_a)
+    columns_a = len(m_a[0])
+    rows_b = len(m_b)
+    columns_b = len(m_b[0])
 
-    # check the validity of the content of each elemtent
-    # for matrix b
-    if not all(type(row) == list for row in m_b):
-        raise TypeError("m_b must be a list of lists")
-    if len(m_b) == 0:
-        raise ValueError("m_b can't be empty")
-    if len(m_b[0]) == 0:
-        raise ValueError("m_b can't be empty")
-
-    # Check the validity of the content of each list
-    # inside each list of matrix a
-    row_len = len(m_a[0])
-    if not all(len(row) == row_len for row in m_a):
-        raise TypeError("each row of m_a must be of the same size")
-
-    if not all(type(num) in [int, float] for row in m_a for num in row):
-        raise TypeError("m_a should contain only integers or floats")
-    # Check the validity of the content of each list
-    # inside each list of matrix a
-    row_len = len(m_b[0])
-    if not all(len(row) == row_len for row in m_b):
-        raise TypeError("each row of m_b must be of the same size")
-
-    if not all(type(num) in [int, float] for row in m_b for num in row):
-        raise TypeError("m_b should contain only integers or floats")
-    # check if the two vectors are multipliable
-    acols = len(m_a[0])
-    arows = len(m_a)
-    brows = len(m_b)
-    bcols = len(m_b[0])
-    if acols != brows:
+    if columns_a != rows_b:
         raise ValueError("m_a and m_b can't be multiplied")
 
-    product = [[0 for x in range(bcols)] for y in range(arows)]
-    for row_i in range(len(m_a)):
-        col_b = 0
-        while (col_b < bcols):
-            sum_t = 0
-            for col_i in range(len(m_a[row_i])):
-                sum_t += m_a[row_i][col_i] * m_b[col_i][col_b]
-            product[row_i][col_b] = sum_t
-            col_b += 1
-    return product
+    row = []
+    matrix = []
+    for i in range(rows_a):
+        for j in range(columns_b):
+            sums = 0
+            for k in range(rows_b):
+                sums += m_a[i][k] * m_b[k][j]
+            row.append(sums)
+        matrix.append(row)
+        row = []
+    return matrix
+
+
+if __name__ == '__main__':
+    print(matrix_mul([[1, 2], [3, 4]], [[1, 2], [3, 4]]))
+    print(matrix_mul([[1, 2]], [[3, 4], [5, 6]]))
